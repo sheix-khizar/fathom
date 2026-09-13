@@ -1,0 +1,31 @@
+{
+  "agent-capture": {
+    "enabled": true,
+    "Stop": [
+      {
+        "type": "command",
+        "command": "python .agents/capture.py --hook",
+        "timeout": 30
+      }
+    ],
+    "PostInvocation": [
+      {
+        "type": "command",
+        "command": "python .agents/capture.py --hook",
+        "timeout": 30
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .agents/capture.py --hook",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}
