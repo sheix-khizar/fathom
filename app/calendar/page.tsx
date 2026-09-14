@@ -1,3 +1,7 @@
+import { getMeetings } from "@/lib/data/meetings";
+import CalendarGrid from "@/components/calendar/CalendarGrid";
+
 export default function CalendarPage() {
-  return <h1 className="text-xl font-semibold">Calendar</h1>;
+  const meetings = getMeetings();
+  return <CalendarGrid meetings={meetings} />;
 }
