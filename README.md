@@ -185,7 +185,7 @@ The production deployment has also been tested through the public Vercel URL, in
 
 The assignment explicitly allowed the meeting capture layer to be stubbed.
 
-Because this was a time-boxed rebuild, development effort was intentionally prioritized toward the user-facing **post-meeting intelligence experience** rather than building a production-grade meeting bot for Zoom, Google Meet, or Microsoft Teams.
+Because this was time-boxed rebuild, development effort was intentionally prioritized toward the user-facing **post-meeting intelligence experience** rather than building a production-grade meeting bot for Zoom, Google Meet, or Microsoft Teams.
 
 The implemented experience demonstrates:
 
