@@ -2,8 +2,6 @@
 
 A Fathom-inspired meeting intelligence application that turns recorded conversations into searchable, structured, and actionable knowledge.
 
-**Live Demo:** https://fathom-five-rho.vercel.app/
-**Repository:** https://github.com/sheix-khizar/fathom
 
 ## Overview
 
@@ -201,10 +199,6 @@ The implemented experience demonstrates:
 
 The capture/recording layer can be replaced with a real meeting ingestion pipeline in a production implementation.
 
-## Demo
-
-Use the live deployment to explore the complete workflow:
+## Workflow:
 
 **Dashboard → Meeting → Playback → Transcript → AI Summary → Action Items → Search → Templates → Share Clip**
-
-**Live Demo:** https://fathom-five-rho.vercel.app/
