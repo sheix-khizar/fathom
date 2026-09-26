@@ -49,17 +49,18 @@ export async function GET(request: Request) {
       const meetingIds = Array.from(new Set(matchedLines.map(l => l.meeting_id)));
       const { data: relatedMeetings } = await supabaseAdmin
         .from('meetings')
-        .select('id, title')
+        .select('id, title, date')
         .in('id', meetingIds);
 
-      const titleMap: Record<string, string> = {};
+      const metaMap: Record<string, { title: string; date: string }> = {};
       relatedMeetings?.forEach(m => {
-        titleMap[m.id] = m.title;
+        metaMap[m.id] = { title: m.title, date: m.date };
       });
 
       enrichedLines = matchedLines.map(line => ({
         ...line,
-        meetingTitle: titleMap[line.meeting_id] || 'Meeting'
+        meetingTitle: metaMap[line.meeting_id]?.title || 'Meeting',
+        meetingDate: metaMap[line.meeting_id]?.date || ''
       }));
     }
 

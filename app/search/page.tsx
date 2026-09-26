@@ -1,19 +1,21 @@
 import { Suspense } from "react";
-import { getMeetings } from "@/lib/data/meetings";
-import SearchResults from "@/components/search/SearchResults";
+import EditorialSearch from "@/components/search/EditorialSearch";
+
+export const dynamic = "force-dynamic";
 
 export default function SearchPage() {
-  const meetings = getMeetings();
-
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-5xl py-12 text-center text-sm text-gray-500">
-          Loading search index...
+        <div className="mx-auto max-w-4xl py-16 text-center">
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--muted-foreground)]">
+            <span className="h-3 w-3 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
+            Loading workspace search index...
+          </div>
         </div>
       }
     >
-      <SearchResults meetings={meetings} />
+      <EditorialSearch />
     </Suspense>
   );
 }
