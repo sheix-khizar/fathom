@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const activeNavItems = [
+const navItems = [
   {
     href: "/",
     label: "Dashboard",
@@ -33,27 +33,6 @@ const activeNavItems = [
   },
 ];
 
-const disabledNavItems = [
-  {
-    label: "Calendar",
-    reason: "Cut in v2",
-    icon: (
-      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-    ),
-  },
-  {
-    label: "Templates",
-    reason: "Cut in v2",
-    icon: (
-      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    ),
-  },
-];
-
 export default function Sidebar() {
   const pathname = usePathname();
 
@@ -77,19 +56,19 @@ export default function Sidebar() {
                 AI Notetaker
               </span>
             </div>
-            <span className="rounded-full px-2 py-0.5 text-[9px] font-mono font-semibold uppercase tracking-wider border border-amber-500/30 bg-amber-500/10 text-amber-400 shadow-sm">
+            <span className="rounded-full px-2 py-0.5 text-[9px] font-mono font-semibold uppercase tracking-wider border border-amber-500/30 bg-amber-500/10 text-amber-400">
               v2 · beta
             </span>
           </div>
         </Link>
 
-        {/* Live Navigation items */}
+        {/* Navigation items */}
         <div className="space-y-1">
           <span className="px-2.5 text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--muted-foreground)]">
             Workspace
           </span>
           <nav className="flex flex-col gap-1 pt-1">
-            {activeNavItems.map((item) => {
+            {navItems.map((item) => {
               const isActive =
                 item.href === "/"
                   ? pathname === "/"
@@ -119,47 +98,23 @@ export default function Sidebar() {
             })}
           </nav>
         </div>
-
-        {/* Explicitly Disabled Scoped-Out Features (Plan v2 honesty) */}
-        <div className="space-y-1 pt-2 border-t border-[var(--border)]">
-          <span className="px-2.5 text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--muted-foreground)]/60">
-            Out of Scope (v2)
-          </span>
-          <div className="flex flex-col gap-1 pt-1 opacity-50">
-            {disabledNavItems.map((item) => (
-              <div
-                key={item.label}
-                title={`${item.label} was intentionally cut in Plan v2 to focus on core intelligence.`}
-                className="flex items-center justify-between rounded-xl px-3 py-1.5 text-xs text-[var(--muted-foreground)] cursor-not-allowed select-none"
-              >
-                <div className="flex items-center gap-2.5">
-                  <span className="text-[var(--muted-foreground)]">{item.icon}</span>
-                  <span>{item.label}</span>
-                </div>
-                <span className="rounded bg-[var(--muted)] px-1.5 py-0.5 text-[9px] font-mono text-[var(--muted-foreground)] border border-[var(--border)]">
-                  {item.reason}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
-      {/* Honest Capture Architecture Status */}
+      {/* Footer: Workspace & Capture Status */}
       <div className="space-y-3">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--muted)]/50 p-3 space-y-1.5 shadow-sm">
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="font-medium text-[var(--foreground)]">Capture Mode</span>
-            <span className="inline-flex items-center gap-1 text-[10px] font-mono text-amber-400 font-semibold bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">
-              Manual Upload
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--muted)]/40 p-3 space-y-1 text-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium text-[var(--foreground)]">Capture Pipeline</span>
+            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded">
+              Ready
             </span>
           </div>
           <p className="text-[10px] text-[var(--muted-foreground)] leading-tight">
-            Audio/video ingest via Gemini pipeline. Bot auto-join is stubbed in this build.
+            Manual audio/video upload via Gemini 3.8.
           </p>
         </div>
 
-        {/* User profile & Sign in hint */}
+        {/* User profile & Sign in */}
         <div className="flex items-center justify-between px-2 pt-2 border-t border-[var(--border)]">
           <div className="flex items-center gap-2">
             <div className="h-6 w-6 rounded-full bg-indigo-600/30 text-indigo-400 ring-1 ring-indigo-500/40 flex items-center justify-center text-[10px] font-semibold">
@@ -167,7 +122,7 @@ export default function Sidebar() {
             </div>
             <div className="text-left">
               <span className="block text-[11px] font-medium text-[var(--foreground)] leading-none">
-                Demo Workspace
+                Acme Workspace
               </span>
               <span className="text-[9px] font-mono text-[var(--muted-foreground)]">
                 Local Session
