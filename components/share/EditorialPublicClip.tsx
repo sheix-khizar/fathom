@@ -88,12 +88,12 @@ export default function EditorialPublicClip({
   );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 pb-20 px-4 sm:px-6">
+    <div className="mx-auto max-w-4xl space-y-6 pb-20 px-4 sm:px-6 animate-fadeIn">
       {/* Top Banner: Public Share & Zero Login */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-[var(--border)] bg-gradient-to-r from-emerald-950/20 via-[var(--card)] to-[var(--card)] p-4 sm:p-5 shadow-lg">
         <div className="flex items-center gap-2.5">
-          <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-[10px] font-mono font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wide">
+          <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2.5 py-0.5 text-[10px] font-mono font-semibold text-emerald-400 uppercase tracking-wide">
             Public Excerpt
           </span>
           <span className="text-xs text-[var(--muted-foreground)] hidden sm:inline">•</span>
@@ -106,11 +106,11 @@ export default function EditorialPublicClip({
           <button
             type="button"
             onClick={handleCopyLink}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xl border border-[var(--border)] bg-[var(--muted)] text-xs font-medium text-[var(--foreground)] hover:bg-[var(--accent)] transition"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-xl border border-[var(--border)] bg-[var(--muted)]/60 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--muted)] transition cursor-pointer"
           >
             {copied ? (
               <>
-                <svg className="h-3.5 w-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-3.5 w-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 Link Copied!
@@ -127,7 +127,7 @@ export default function EditorialPublicClip({
 
           <Link
             href="/"
-            className="inline-flex items-center gap-1 h-8 px-3 rounded-xl bg-indigo-600 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-sm shadow-indigo-600/20"
+            className="inline-flex items-center gap-1 h-8 px-3.5 rounded-xl bg-indigo-600 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-sm shadow-indigo-600/20"
           >
             Launch Fathom →
           </Link>
@@ -135,10 +135,10 @@ export default function EditorialPublicClip({
       </div>
 
       {/* Meeting & Clip Title Card */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 space-y-4 shadow-sm">
+      <div className="rounded-3xl border border-[var(--border)] bg-gradient-to-b from-[var(--card)] to-[var(--card)]/90 p-6 sm:p-8 space-y-4 shadow-xl">
         <div className="space-y-2">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="rounded-full bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 text-[10px] font-mono font-medium text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">
+            <span className="rounded-full bg-indigo-500/10 border border-indigo-500/25 px-2.5 py-0.5 text-[10px] font-mono font-medium text-indigo-400 uppercase tracking-wide">
               Shared Dialogue Window
             </span>
             <span className="text-xs font-mono text-[var(--muted-foreground)]">
@@ -146,7 +146,7 @@ export default function EditorialPublicClip({
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--foreground)] font-serif md:font-sans">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[var(--foreground)]">
             {clip.title || `${meeting.title} (Key Moment)`}
           </h1>
 
@@ -156,10 +156,10 @@ export default function EditorialPublicClip({
         </div>
 
         {/* Metadata Badges */}
-        <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[var(--border)] text-xs text-[var(--muted-foreground)]">
+        <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-[var(--border)] text-xs text-[var(--muted-foreground)]">
           <span className="font-mono">{formatDisplayDate(meeting.date)}</span>
           <span>•</span>
-          <span className="font-mono">
+          <span className="font-mono text-indigo-300">
             Window: {clip.start_time || transcript[0]?.timestamp || "00:00"} &ndash;{" "}
             {clip.end_time || transcript[transcript.length - 1]?.timestamp || "End"}
           </span>
@@ -175,15 +175,15 @@ export default function EditorialPublicClip({
       </div>
 
       {/* Bounded Clip Player (Simulated Scrubber) */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 sm:p-6 space-y-4 shadow-sm">
+      <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-5 sm:p-6 space-y-4 shadow-xl">
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-indigo-500 animate-pulse" />
-            <span className="font-mono text-[11px] font-medium uppercase tracking-wider text-[var(--muted-foreground)]">
-              Synchronized Clip Player
+            <span className="h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
+            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[var(--foreground)]">
+              Synchronized Clip Scrubber
             </span>
           </div>
-          <span className="font-mono text-[11px] text-[var(--muted-foreground)]">
+          <span className="font-mono text-xs text-[var(--muted-foreground)]">
             {formatDurationSeconds(currentTimeSec)} / {formatDurationSeconds(clipDurationSec)}
           </span>
         </div>
@@ -208,7 +208,7 @@ export default function EditorialPublicClip({
           <button
             type="button"
             onClick={() => setIsPlaying(!isPlaying)}
-            className="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-indigo-600 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-sm shadow-indigo-600/20"
+            className="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-indigo-600 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-md shadow-indigo-600/30 cursor-pointer"
           >
             {isPlaying ? (
               <>
@@ -228,20 +228,20 @@ export default function EditorialPublicClip({
           </button>
 
           <span className="text-[11px] font-mono text-[var(--muted-foreground)]">
-            Simulation timeline • Synchronized to transcript lines
+            Synchronized to transcript slice
           </span>
         </div>
       </div>
 
       {/* Bounded Transcript Section */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 space-y-6 shadow-sm">
+      <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 space-y-6 shadow-xl">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-[var(--border)] pb-4">
           <div>
-            <h2 className="text-base font-semibold text-[var(--foreground)]">
-              Bounded Transcript Moment
+            <h2 className="text-base font-bold text-[var(--foreground)]">
+              Bounded Dialogue Window
             </h2>
             <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
-              Only the dialogue turns within this bounded moment are revealed.
+              Only dialogue turns within this bounded moment are revealed to external visitors.
             </p>
           </div>
 
@@ -262,14 +262,14 @@ export default function EditorialPublicClip({
               return (
                 <div
                   key={line.id}
-                  className={`flex items-start gap-3.5 rounded-xl p-4 transition border ${
+                  className={`flex items-start gap-4 rounded-2xl p-4 sm:p-5 transition-all duration-150 border ${
                     isActive
-                      ? "border-indigo-500/60 bg-indigo-500/10 shadow-sm"
-                      : "border-[var(--border)] bg-[var(--background)]/40 hover:bg-[var(--muted)]/50"
+                      ? "border-indigo-500/60 bg-indigo-950/30 shadow-md"
+                      : "border-[var(--border)] bg-[var(--muted)]/20 hover:bg-[var(--muted)]/40"
                   }`}
                 >
                   <div
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-semibold ${
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-bold ${
                       isActive
                         ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30"
                         : "bg-[var(--muted)] text-[var(--foreground)] border border-[var(--border)]"
@@ -280,14 +280,14 @@ export default function EditorialPublicClip({
 
                   <div className="flex-1 space-y-1.5 min-w-0">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-semibold text-[var(--foreground)]">
+                      <span className="font-bold text-[var(--foreground)]">
                         {line.speaker}
                       </span>
-                      <span className="font-mono text-[11px] text-[var(--muted-foreground)] bg-[var(--muted)] px-2 py-0.5 rounded border border-[var(--border)]">
+                      <span className="font-mono text-[11px] text-[var(--muted-foreground)] bg-[var(--muted)] px-2.5 py-0.5 rounded-lg border border-[var(--border)]">
                         {line.timestamp}
                       </span>
                     </div>
-                    <p className="text-xs leading-relaxed text-[var(--foreground)]">
+                    <p className="text-sm leading-relaxed text-[var(--foreground)]">
                       {line.text}
                     </p>
                   </div>
@@ -298,31 +298,33 @@ export default function EditorialPublicClip({
         )}
 
         {/* Boundary Notice */}
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--muted)]/40 p-3.5 text-xs space-y-1 text-center">
-          <p className="text-[11px] text-[var(--muted-foreground)]">
+        <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-xs space-y-1 text-center">
+          <p className="text-[11px] text-emerald-400 font-mono">
             🔒 <strong>Boundary Notice:</strong> Dialogue outside this window and confidential internal action items are withheld under Supabase Row Level Security.
           </p>
         </div>
       </div>
 
       {/* Meeting Context & Overview Section */}
-      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 space-y-5 shadow-sm">
-        <div className="space-y-1 border-b border-[var(--border)] pb-3">
+      <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 space-y-5 shadow-xl">
+        <div className="space-y-1 border-b border-[var(--border)] pb-4">
           <div className="flex items-center gap-2">
-            <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-mono font-medium text-emerald-600 dark:text-emerald-400">
+            <span className="rounded-full bg-indigo-500/10 border border-indigo-500/25 px-2.5 py-0.5 text-[10px] font-mono font-medium text-indigo-400 uppercase tracking-wide">
               AI SYNTHESIS
             </span>
             <span className="text-xs font-mono text-[var(--muted-foreground)]">Gemini Executive Intelligence</span>
           </div>
-          <h3 className="text-base font-semibold text-[var(--foreground)]">
+          <h3 className="text-base font-bold text-[var(--foreground)]">
             Meeting Context & Executive Summary
           </h3>
         </div>
 
         {meeting.summary ? (
-          <p className="text-xs sm:text-sm text-[var(--foreground)] leading-relaxed">
-            {meeting.summary}
-          </p>
+          <div className="border-l-2 border-indigo-500/40 pl-4 py-1">
+            <p className="text-sm sm:text-base text-[var(--foreground)] leading-relaxed italic">
+              "{meeting.summary}"
+            </p>
+          </div>
         ) : (
           <p className="text-xs italic text-[var(--muted-foreground)]">
             No summary generated for this meeting.
@@ -331,17 +333,17 @@ export default function EditorialPublicClip({
 
         {/* Decisions finalized */}
         {meeting.decisions && meeting.decisions.length > 0 && (
-          <div className="pt-2 space-y-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground)] block">
-              Decisions Finalized
+          <div className="pt-2 space-y-3">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 block">
+              Agreed Decisions & Commitments
             </span>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5">
               {meeting.decisions.map((dec, i) => (
                 <li
                   key={i}
-                  className="flex items-start gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--background)]/50 p-3 text-xs text-[var(--foreground)]"
+                  className="flex items-start gap-3 rounded-xl border border-[var(--border)] bg-[var(--muted)]/30 p-3.5 text-xs sm:text-sm text-[var(--foreground)]"
                 >
-                  <span className="text-emerald-500 font-bold shrink-0">✓</span>
+                  <span className="text-emerald-400 font-bold shrink-0">✓</span>
                   <span>{dec}</span>
                 </li>
               ))}

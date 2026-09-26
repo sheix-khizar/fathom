@@ -115,28 +115,35 @@ export default function MeetingDetailV2({
       </div>
 
       {/* Meeting Header */}
-      <header className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm space-y-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--foreground)] font-serif md:font-sans">
+      <header className="rounded-3xl border border-[var(--border)] bg-gradient-to-b from-[var(--card)] to-[var(--card)]/90 p-6 sm:p-8 shadow-xl space-y-4">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-indigo-500/10 border border-indigo-500/25 px-2.5 py-0.5 text-[10px] font-mono font-medium text-indigo-400 uppercase tracking-wide">
+              Meeting Intelligence Session
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-[var(--foreground)]">
             {meeting.title}
           </h1>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-[var(--muted-foreground)]">
-            <span>📅 {formatMeetingDate(meeting.date)}</span>
-            <span>⏱ {meeting.duration}</span>
-            <span>💬 {transcript.length} dialogue turns</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs font-mono text-[var(--muted-foreground)] pt-1">
+            <span className="inline-flex items-center gap-1.5">📅 {formatMeetingDate(meeting.date)}</span>
+            <span>•</span>
+            <span className="inline-flex items-center gap-1.5">⏱ {meeting.duration}</span>
+            <span>•</span>
+            <span className="inline-flex items-center gap-1.5 text-indigo-300">💬 {transcript.length} dialogue turns</span>
           </div>
         </div>
 
         {/* Participants Chips */}
         {meeting.participants && meeting.participants.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5 pt-1">
-            <span className="text-xs text-[var(--muted-foreground)] mr-1">Attendees:</span>
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[var(--border)]">
+            <span className="text-xs font-mono text-[var(--muted-foreground)] mr-1">Attendees:</span>
             {meeting.participants.map((person, idx) => (
               <span
                 key={idx}
-                className="inline-flex items-center gap-1 rounded-lg border border-[var(--border)] bg-[var(--muted)] px-2.5 py-1 text-xs text-[var(--foreground)]"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--muted)]/60 px-3 py-1 text-xs text-[var(--foreground)] font-medium shadow-sm"
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
                 {person}
               </span>
             ))}
@@ -153,19 +160,19 @@ export default function MeetingDetailV2({
       />
 
       {/* Editorial Navigation Tabs */}
-      <div className="flex overflow-x-auto scrollbar-none border-b border-[var(--border)] text-xs sm:text-sm font-medium gap-4 sm:gap-6 whitespace-nowrap">
+      <div className="flex overflow-x-auto scrollbar-none border-b border-[var(--border)] text-xs sm:text-sm font-medium gap-2 sm:gap-4 whitespace-nowrap pt-2">
         <button
           type="button"
           onClick={() => setActiveTab("overview")}
-          className={`pb-3 border-b-2 transition flex items-center gap-2 cursor-pointer ${
+          className={`pb-3.5 px-3 border-b-2 transition-all duration-150 flex items-center gap-2 cursor-pointer font-medium ${
             activeTab === "overview"
-              ? "border-[var(--foreground)] text-[var(--foreground)] font-semibold"
-              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              ? "border-indigo-500 text-[var(--foreground)] font-bold text-sm"
+              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-slate-700"
           }`}
         >
           <span>Executive Overview</span>
           {meeting.decisions && meeting.decisions.length > 0 && (
-            <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-mono text-[var(--muted-foreground)]">
+            <span className="rounded-full bg-emerald-500/15 border border-emerald-500/25 px-2 py-0.5 text-[11px] font-mono font-semibold text-emerald-400">
               {meeting.decisions.length}
             </span>
           )}
@@ -174,14 +181,14 @@ export default function MeetingDetailV2({
         <button
           type="button"
           onClick={() => setActiveTab("transcript")}
-          className={`pb-3 border-b-2 transition flex items-center gap-2 cursor-pointer ${
+          className={`pb-3.5 px-3 border-b-2 transition-all duration-150 flex items-center gap-2 cursor-pointer font-medium ${
             activeTab === "transcript"
-              ? "border-[var(--foreground)] text-[var(--foreground)] font-semibold"
-              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              ? "border-indigo-500 text-[var(--foreground)] font-bold text-sm"
+              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-slate-700"
           }`}
         >
           <span>Synced Transcript</span>
-          <span className="rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-mono text-[var(--muted-foreground)]">
+          <span className="rounded-full bg-indigo-500/15 border border-indigo-500/25 px-2 py-0.5 text-[11px] font-mono font-semibold text-indigo-400">
             {transcript.length}
           </span>
         </button>
@@ -189,19 +196,19 @@ export default function MeetingDetailV2({
         <button
           type="button"
           onClick={() => setActiveTab("actions")}
-          className={`pb-3 border-b-2 transition flex items-center gap-2 cursor-pointer ${
+          className={`pb-3.5 px-3 border-b-2 transition-all duration-150 flex items-center gap-2 cursor-pointer font-medium ${
             activeTab === "actions"
-              ? "border-[var(--foreground)] text-[var(--foreground)] font-semibold"
-              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+              ? "border-indigo-500 text-[var(--foreground)] font-bold text-sm"
+              : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:border-slate-700"
           }`}
         >
           <span>Action Items</span>
           {actionItems.length > 0 && (
             <span
-              className={`rounded-full px-2 py-0.5 text-[11px] font-mono font-medium ${
+              className={`rounded-full px-2 py-0.5 text-[11px] font-mono font-semibold ${
                 openActionItemsCount > 0
-                  ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  ? "bg-amber-500/15 border border-amber-500/25 text-amber-400"
+                  : "bg-emerald-500/15 border border-emerald-500/25 text-emerald-400"
               }`}
             >
               {openActionItemsCount} open

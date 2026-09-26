@@ -75,7 +75,7 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
         regex.test(part) ? (
           <mark
             key={i}
-            className="rounded bg-amber-400/25 dark:bg-amber-400/30 text-[var(--foreground)] px-0.5 font-medium underline decoration-amber-500/60"
+            className="rounded bg-amber-400/25 text-amber-200 px-1 py-0.5 font-semibold underline decoration-amber-400/60"
           >
             {part}
           </mark>
@@ -98,12 +98,13 @@ export default function EditorialSearch() {
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
 
   const [isLoading, setIsLoading] = useState(false);
-  const [apiData, setApiData] = useState<SearchApiResponse | null>(null);
+  const [matchedMeetings, setMatchedMeetings] = useState<SearchMeetingResult[]>([]);
+  const [matchedTranscripts, setMatchedTranscripts] = useState<SearchTranscriptMatch[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Sync state if URL query param changes externally (e.g. from TopBar or back button)
+  // Sync state if URL changes externally
   useEffect(() => {
-    if (urlQuery !== inputValue && urlQuery !== debouncedQuery) {
+    if (urlQuery !== inputValue) {
       setInputValue(urlQuery);
       setDebouncedQuery(urlQuery);
     }
@@ -114,26 +115,28 @@ export default function EditorialSearch() {
     const timer = setTimeout(() => {
       setDebouncedQuery(inputValue);
 
-      // Keep URL search query updated
+      // Sync query parameter to browser URL gracefully
+      const params = new URLSearchParams(window.location.search);
+      if (inputValue.trim()) {
+        params.set("q", inputValue.trim());
+      } else {
+        params.delete("q");
+      }
+      const newUrl = params.toString() ? `/search?${params.toString()}` : "/search";
       startTransition(() => {
-        const trimmed = inputValue.trim();
-        if (trimmed) {
-          router.replace(`/search?q=${encodeURIComponent(trimmed)}`, { scroll: false });
-        } else {
-          router.replace(`/search`, { scroll: false });
-        }
+        router.replace(newUrl, { scroll: false });
       });
     }, 300);
 
     return () => clearTimeout(timer);
   }, [inputValue, router]);
 
-  // Fetch results whenever debouncedQuery changes
+  // Execute search fetch whenever debounced query changes
   useEffect(() => {
     const trimmed = debouncedQuery.trim();
-
     if (!trimmed) {
-      setApiData(null);
+      setMatchedMeetings([]);
+      setMatchedTranscripts([]);
       setIsLoading(false);
       setErrorMessage(null);
       return;
@@ -143,60 +146,65 @@ export default function EditorialSearch() {
     setIsLoading(true);
     setErrorMessage(null);
 
-    fetch(`/api/search?q=${encodeURIComponent(trimmed)}`)
+    const controller = new AbortController();
+
+    fetch(`/api/search?q=${encodeURIComponent(trimmed)}`, {
+      signal: controller.signal,
+    })
       .then(async (res) => {
         if (!res.ok) {
-          const errBody = await res.json().catch(() => ({}));
-          throw new Error(errBody.error || `HTTP error ${res.status}`);
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || `Search failed with status ${res.status}`);
         }
-        return res.json();
+        return res.json() as Promise<SearchApiResponse>;
       })
-      .then((data: SearchApiResponse) => {
-        if (isMounted) {
-          setApiData(data);
-          setIsLoading(false);
-        }
+      .then((data) => {
+        if (!isMounted) return;
+        setMatchedMeetings(data.meetings || []);
+        setMatchedTranscripts(data.transcriptMatches || []);
+        setIsLoading(false);
       })
       .catch((err) => {
-        if (isMounted) {
-          console.error("Search fetch failed:", err);
-          setErrorMessage(err.message || "Failed to load search results.");
-          setIsLoading(false);
-        }
+        if (err.name === "AbortError") return;
+        if (!isMounted) return;
+        console.error("Search API error:", err);
+        setErrorMessage(err.message || "Failed to query workspace index.");
+        setIsLoading(false);
       });
 
     return () => {
       isMounted = false;
+      controller.abort();
     };
   }, [debouncedQuery]);
 
-  const matchedMeetings = apiData?.meetings || [];
-  const matchedTranscripts = apiData?.transcriptMatches || [];
   const totalCount = matchedMeetings.length + matchedTranscripts.length;
+
+  const handleClear = () => {
+    setInputValue("");
+    setDebouncedQuery("");
+    setMatchedMeetings([]);
+    setMatchedTranscripts([]);
+    router.replace("/search", { scroll: false });
+  };
 
   const handleSuggestionClick = (keyword: string) => {
     setInputValue(keyword);
     setDebouncedQuery(keyword);
   };
 
-  const handleClear = () => {
-    setInputValue("");
-    setDebouncedQuery("");
-    setApiData(null);
-  };
-
   return (
-    <div className="mx-auto max-w-4xl space-y-8 pb-16">
+    <div className="mx-auto max-w-5xl space-y-6 pb-20 px-4 sm:px-6">
       {/* Editorial Header */}
       <div className="space-y-2 border-b border-[var(--border)] pb-6">
         <div className="flex items-center gap-2">
-          <span className="rounded-full bg-[var(--muted)] border border-[var(--border)] px-2.5 py-0.5 text-[10px] font-mono font-medium tracking-wide uppercase text-[var(--muted-foreground)]">
+          <span className="rounded-full bg-indigo-500/10 border border-indigo-500/25 px-2.5 py-0.5 text-[10px] font-mono font-medium tracking-wide uppercase text-indigo-400">
             Intelligence Search
           </span>
           <span className="font-mono text-xs text-[var(--muted-foreground)]">•</span>
           <span className="font-mono text-xs text-[var(--muted-foreground)]">Real-time Index</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--foreground)]">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--foreground)]">
           Search Workspace
         </h1>
         <p className="text-sm text-[var(--muted-foreground)] max-w-2xl leading-relaxed">
@@ -206,7 +214,7 @@ export default function EditorialSearch() {
 
       {/* Search Input Bar */}
       <div className="space-y-3">
-        <div className="relative">
+        <div className="relative shadow-lg rounded-2xl">
           <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[var(--muted-foreground)]">
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -224,7 +232,7 @@ export default function EditorialSearch() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Search keywords, speakers, decisions, or transcript phrases..."
-            className="w-full rounded-xl border border-[var(--border)] bg-[var(--card)] pl-11 pr-24 py-3 text-sm text-[var(--foreground)] placeholder-[var(--muted-foreground)] focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition shadow-sm"
+            className="w-full rounded-2xl border border-[var(--border)] bg-[var(--card)] pl-11 pr-24 py-3.5 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition"
           />
 
           <div className="absolute inset-y-0 right-3 flex items-center gap-2">
@@ -235,7 +243,7 @@ export default function EditorialSearch() {
               <button
                 type="button"
                 onClick={handleClear}
-                className="rounded px-2 py-1 text-xs font-mono text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition"
+                className="rounded-lg px-2.5 py-1 text-xs font-mono text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--muted)] transition cursor-pointer"
                 title="Clear query"
               >
                 Clear
@@ -251,9 +259,9 @@ export default function EditorialSearch() {
               <button
                 type="button"
                 onClick={() => setActiveTab("all")}
-                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                className={`rounded-xl px-3.5 py-1.5 text-xs font-medium transition cursor-pointer ${
                   activeTab === "all"
-                    ? "bg-[var(--foreground)] text-[var(--background)] shadow-sm font-semibold"
+                    ? "bg-indigo-600 text-white shadow-sm font-semibold"
                     : "bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)] hover:text-[var(--foreground)]"
                 }`}
               >
@@ -262,9 +270,9 @@ export default function EditorialSearch() {
               <button
                 type="button"
                 onClick={() => setActiveTab("meetings")}
-                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                className={`rounded-xl px-3.5 py-1.5 text-xs font-medium transition cursor-pointer ${
                   activeTab === "meetings"
-                    ? "bg-[var(--foreground)] text-[var(--background)] shadow-sm font-semibold"
+                    ? "bg-indigo-600 text-white shadow-sm font-semibold"
                     : "bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)] hover:text-[var(--foreground)]"
                 }`}
               >
@@ -273,9 +281,9 @@ export default function EditorialSearch() {
               <button
                 type="button"
                 onClick={() => setActiveTab("transcripts")}
-                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition ${
+                className={`rounded-xl px-3.5 py-1.5 text-xs font-medium transition cursor-pointer ${
                   activeTab === "transcripts"
-                    ? "bg-[var(--foreground)] text-[var(--background)] shadow-sm font-semibold"
+                    ? "bg-indigo-600 text-white shadow-sm font-semibold"
                     : "bg-[var(--card)] text-[var(--muted-foreground)] border border-[var(--border)] hover:text-[var(--foreground)]"
                 }`}
               >
@@ -294,7 +302,7 @@ export default function EditorialSearch() {
       <div className="space-y-4">
         {/* Error State */}
         {errorMessage && (
-          <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-600 dark:text-red-400">
+          <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
             <p className="font-semibold">Search Request Failed</p>
             <p className="text-xs mt-0.5">{errorMessage}</p>
           </div>
@@ -302,9 +310,9 @@ export default function EditorialSearch() {
 
         {/* Empty State: No Query Entered */}
         {!debouncedQuery.trim() && (
-          <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)]/50 p-10 text-center space-y-4">
-            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--card)]/50 p-10 text-center space-y-4 shadow-sm">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-400">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -317,7 +325,7 @@ export default function EditorialSearch() {
               <h2 className="text-base font-semibold text-[var(--foreground)]">
                 Search meetings and transcript dialogue
               </h2>
-              <p className="text-xs text-[var(--muted-foreground)] max-w-sm mx-auto">
+              <p className="text-xs text-[var(--muted-foreground)] max-w-sm mx-auto leading-relaxed">
                 Type keywords to find discussion topics, architectural decisions, and spoken phrases.
               </p>
             </div>
@@ -327,13 +335,13 @@ export default function EditorialSearch() {
               <span className="text-[11px] font-mono text-[var(--muted-foreground)] uppercase tracking-wider block mb-2">
                 Quick Keywords
               </span>
-              <div className="flex flex-wrap justify-center gap-1.5">
+              <div className="flex flex-wrap justify-center gap-2">
                 {SUGGESTED_QUERIES.map((keyword) => (
                   <button
                     key={keyword}
                     type="button"
                     onClick={() => handleSuggestionClick(keyword)}
-                    className="rounded-lg bg-[var(--muted)] border border-[var(--border)] px-3 py-1 text-xs text-[var(--foreground)] hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
+                    className="rounded-xl bg-[var(--muted)] border border-[var(--border)] px-3 py-1.5 text-xs text-[var(--foreground)] hover:border-indigo-500/50 hover:text-indigo-300 transition cursor-pointer"
                   >
                     {keyword}
                   </button>
@@ -345,9 +353,9 @@ export default function EditorialSearch() {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-8 text-center space-y-3">
+          <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-8 text-center space-y-3 shadow-sm">
             <div className="inline-flex items-center gap-2 text-xs font-mono text-[var(--muted-foreground)]">
-              <span className="h-3 w-3 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
+              <span className="h-3.5 w-3.5 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
               Scanning database for &ldquo;{debouncedQuery}&rdquo;...
             </div>
           </div>
@@ -355,9 +363,9 @@ export default function EditorialSearch() {
 
         {/* Honest No Results State */}
         {!isLoading && debouncedQuery.trim() && totalCount === 0 && !errorMessage && (
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-12 text-center space-y-4">
-            <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--muted-foreground)]">
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-12 text-center space-y-4 shadow-sm">
+            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--muted)] text-[var(--muted-foreground)]">
+              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -370,14 +378,14 @@ export default function EditorialSearch() {
               <h2 className="text-base font-semibold text-[var(--foreground)]">
                 No results found for &ldquo;{debouncedQuery}&rdquo;
               </h2>
-              <p className="text-xs text-[var(--muted-foreground)] max-w-sm mx-auto">
+              <p className="text-xs text-[var(--muted-foreground)] max-w-sm mx-auto leading-relaxed">
                 No meeting titles or transcript lines matched your query. Try searching for terms like &ldquo;Supabase&rdquo;, &ldquo;Roadmap&rdquo;, or &ldquo;Architecture&rdquo;.
               </p>
             </div>
             <button
               type="button"
               onClick={handleClear}
-              className="inline-flex items-center rounded-lg bg-[var(--muted)] border border-[var(--border)] px-3 py-1.5 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--accent)] transition"
+              className="inline-flex items-center rounded-xl bg-[var(--muted)] border border-[var(--border)] px-4 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--accent)] transition cursor-pointer"
             >
               Clear Search Query
             </button>
@@ -392,14 +400,14 @@ export default function EditorialSearch() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
                   <div className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                    <span className="h-2 w-2 rounded-full bg-blue-400" />
                     <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
                       Meeting Sessions ({matchedMeetings.length})
                     </h3>
                   </div>
                 </div>
 
-                <div className="divide-y divide-[var(--border)] rounded-2xl border border-[var(--border)] bg-[var(--card)] overflow-hidden">
+                <div className="divide-y divide-[var(--border)] rounded-3xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-xl">
                   {matchedMeetings.map((meeting) => (
                     <Link
                       key={meeting.id}
@@ -408,7 +416,7 @@ export default function EditorialSearch() {
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2.5">
-                          <span className="rounded-full bg-blue-500/10 border border-blue-500/20 px-2 py-0.5 text-[10px] font-mono font-medium text-blue-600 dark:text-blue-400">
+                          <span className="rounded-full bg-blue-500/10 border border-blue-500/25 px-2.5 py-0.5 text-[10px] font-mono font-medium text-blue-400">
                             TITLE MATCH
                           </span>
                           <span className="text-xs font-mono text-[var(--muted-foreground)]">
@@ -419,17 +427,17 @@ export default function EditorialSearch() {
                           </span>
                         </div>
 
-                        <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                        <span className="text-xs font-medium text-indigo-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1 font-mono">
                           Open detail →
                         </span>
                       </div>
 
-                      <h4 className="text-base font-semibold text-[var(--foreground)] group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
+                      <h4 className="text-base font-bold text-[var(--foreground)] group-hover:text-indigo-400 transition">
                         <HighlightedText text={meeting.title} query={debouncedQuery} />
                       </h4>
 
                       {meeting.summary && (
-                        <p className="text-xs leading-relaxed text-[var(--muted-foreground)] line-clamp-2">
+                        <p className="text-xs leading-relaxed text-[var(--muted-foreground)] line-clamp-2 italic">
                           <HighlightedText text={meeting.summary} query={debouncedQuery} />
                         </p>
                       )}
@@ -444,26 +452,26 @@ export default function EditorialSearch() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
                   <div className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-purple-500" />
+                    <span className="h-2 w-2 rounded-full bg-purple-400" />
                     <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
                       Dialogue Transcripts ({matchedTranscripts.length})
                     </h3>
                   </div>
                 </div>
 
-                <div className="divide-y divide-[var(--border)] rounded-2xl border border-[var(--border)] bg-[var(--card)] overflow-hidden">
+                <div className="divide-y divide-[var(--border)] rounded-3xl border border-[var(--border)] bg-[var(--card)] overflow-hidden shadow-xl">
                   {matchedTranscripts.map((match) => (
                     <Link
                       key={match.id}
                       href={`/meetings/${match.meeting_id}`}
-                      className="group flex flex-col gap-2.5 p-5 transition hover:bg-[var(--muted)]/50"
+                      className="group flex flex-col gap-3 p-5 transition hover:bg-[var(--muted)]/50"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="rounded-full bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 text-[10px] font-mono font-medium text-purple-600 dark:text-purple-400">
-                            TRANSCRIPT
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                          <span className="rounded-full bg-purple-500/10 border border-purple-500/25 px-2.5 py-0.5 text-[10px] font-mono font-medium text-purple-400">
+                            TRANSCRIPT MATCH
                           </span>
-                          <span className="text-xs font-medium text-[var(--foreground)]">
+                          <span className="text-xs font-semibold text-[var(--foreground)]">
                             {match.meetingTitle}
                           </span>
                           {match.meetingDate && (
@@ -474,24 +482,24 @@ export default function EditorialSearch() {
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-[11px] text-[var(--muted-foreground)] bg-[var(--muted)] px-2 py-0.5 rounded border border-[var(--border)]">
+                          <span className="font-mono text-[11px] text-[var(--muted-foreground)] bg-[var(--muted)] px-2.5 py-0.5 rounded-lg border border-[var(--border)]">
                             {match.timestamp}
                           </span>
-                          <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                          <span className="text-xs font-medium text-indigo-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1 font-mono">
                             Jump →
                           </span>
                         </div>
                       </div>
 
-                      {/* Dialogue block */}
-                      <div className="rounded-xl border border-[var(--border)] bg-[var(--background)]/60 p-3.5 space-y-1.5">
+                      {/* Dialogue quote block */}
+                      <div className="rounded-2xl border border-[var(--border)] bg-[var(--background)]/60 p-4 space-y-2">
                         <div className="flex items-center gap-2">
-                          <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
-                          <span className="text-xs font-semibold text-[var(--foreground)]">
+                          <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                          <span className="text-xs font-bold text-[var(--foreground)]">
                             {match.speaker}
                           </span>
                         </div>
-                        <p className="text-xs leading-relaxed text-[var(--foreground)] pl-3.5 border-l-2 border-indigo-500/40">
+                        <p className="text-xs sm:text-sm leading-relaxed text-[var(--foreground)] pl-3.5 border-l-2 border-indigo-500/40">
                           &ldquo;<HighlightedText text={match.text} query={debouncedQuery} />&rdquo;
                         </p>
                       </div>

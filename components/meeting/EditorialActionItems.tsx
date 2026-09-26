@@ -99,7 +99,7 @@ export default function EditorialActionItems({
       }
     } catch (err: any) {
       console.error("Owner update error:", err);
-      setErrorMessage(err.message || "Failed to save owner change.");
+      setErrorMessage(err.message || "Failed to update owner assignment.");
     } finally {
       setSavingId(null);
     }
@@ -107,47 +107,47 @@ export default function EditorialActionItems({
 
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card)] p-12 text-center space-y-3">
-        <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--muted)] text-[var(--muted-foreground)]">
+      <div className="rounded-3xl border border-dashed border-[var(--border)] bg-[var(--card)]/50 p-12 text-center space-y-3">
+        <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-400">
           <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>
         </div>
-        <h3 className="text-base font-medium text-[var(--foreground)]">No Action Items</h3>
-        <p className="text-sm text-[var(--muted-foreground)] max-w-md mx-auto">
-          No action items or commitments were identified for this meeting.
+        <h3 className="text-base font-semibold text-[var(--foreground)]">No Action Items Extracted</h3>
+        <p className="text-xs sm:text-sm text-[var(--muted-foreground)] max-w-md mx-auto leading-relaxed">
+          Gemini did not identify explicit action items or commitments for this meeting dialogue.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-fadeIn">
       {/* Progress & Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-4 shadow-sm">
-        <div>
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-amber-500/20 bg-gradient-to-r from-amber-950/20 via-[var(--card)] to-[var(--card)] p-5 sm:p-6 shadow-xl">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="flex h-5 w-5 items-center justify-center rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400">
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/15 text-amber-400">
               <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </span>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-amber-300">
               Extracted Action Items & Deliverables
             </h3>
           </div>
-          <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
-            Gemini owner guesses are drafts — click an owner chip to reassign.
+          <p className="text-xs text-[var(--muted-foreground)]">
+            AI owner assignments are editable drafts — click an owner chip to reassign.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-xs font-mono font-medium text-[var(--foreground)]">
+          <span className="text-xs font-mono font-bold text-[var(--foreground)]">
             {completedCount} / {items.length} completed
           </span>
-          <div className="w-24 h-2 bg-[var(--muted)] rounded-full overflow-hidden">
+          <div className="w-28 h-2.5 bg-[var(--muted)] rounded-full overflow-hidden border border-[var(--border)]">
             <div
-              className="h-full bg-emerald-500 transition-all duration-300"
+              className="h-full bg-emerald-500 transition-all duration-300 rounded-full"
               style={{ width: `${(completedCount / items.length) * 100}%` }}
             />
           </div>
@@ -155,18 +155,18 @@ export default function EditorialActionItems({
       </div>
 
       {errorMessage && (
-        <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-xs text-red-600 dark:text-red-400">
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-xs text-red-400">
           {errorMessage}
         </div>
       )}
 
       {/* Action Items List */}
-      <div className="divide-y divide-[var(--border)] rounded-2xl border border-[var(--border)] bg-[var(--card)] shadow-sm overflow-hidden">
+      <div className="divide-y divide-[var(--border)] rounded-3xl border border-[var(--border)] bg-[var(--card)] shadow-xl overflow-hidden">
         {items.map((item) => (
           <div
             key={item.id}
-            className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 transition ${
-              item.completed ? "bg-[var(--muted)]/40 opacity-70" : "hover:bg-[var(--muted)]/20"
+            className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 transition-all duration-150 ${
+              item.completed ? "bg-[var(--muted)]/40 opacity-60" : "hover:bg-[var(--muted)]/30"
             }`}
           >
             {/* Checkbox and Text */}
@@ -176,13 +176,13 @@ export default function EditorialActionItems({
                 checked={item.completed}
                 disabled={savingId === item.id}
                 onChange={() => handleToggleComplete(item)}
-                className="mt-1 h-4 w-4 rounded border-[var(--border)] text-indigo-600 focus:ring-0 focus:ring-offset-0 cursor-pointer accent-indigo-600"
+                className="mt-1 h-4 w-4 rounded border-[var(--border)] text-indigo-600 focus:ring-1 focus:ring-indigo-500 cursor-pointer accent-indigo-600 shrink-0"
               />
               <span
-                className={`text-sm leading-snug transition select-text ${
+                className={`text-sm leading-relaxed transition select-text ${
                   item.completed
-                    ? "text-[var(--muted-foreground)] line-through"
-                    : "text-[var(--foreground)]"
+                    ? "text-[var(--muted-foreground)] line-through decoration-slate-500"
+                    : "text-[var(--foreground)] font-medium"
                 }`}
               >
                 {item.text}
@@ -203,19 +203,19 @@ export default function EditorialActionItems({
                       if (e.key === "Enter") handleSaveOwner(item.id, ownerDraft);
                       if (e.key === "Escape") setEditingOwnerId(null);
                     }}
-                    className="h-7 w-36 rounded-lg border border-indigo-500 bg-[var(--background)] px-2 text-xs text-[var(--foreground)] focus:outline-none"
+                    className="h-8 w-36 rounded-xl border border-indigo-500 bg-[var(--background)] px-2.5 text-xs text-[var(--foreground)] focus:outline-none"
                   />
                   <button
                     type="button"
                     onClick={() => handleSaveOwner(item.id, ownerDraft)}
-                    className="h-7 px-2 rounded-lg bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-500 transition"
+                    className="h-8 px-3 rounded-xl bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-500 transition shadow-sm cursor-pointer"
                   >
                     Save
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditingOwnerId(null)}
-                    className="h-7 px-1.5 rounded-lg border border-[var(--border)] text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                    className="h-8 px-2 rounded-xl border border-[var(--border)] text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition cursor-pointer"
                   >
                     ✕
                   </button>
@@ -225,15 +225,17 @@ export default function EditorialActionItems({
                   <button
                     type="button"
                     onClick={() => handleStartEditOwner(item)}
-                    className="group/owner inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--muted)] px-3 py-1 text-xs text-[var(--foreground)] hover:border-indigo-500 transition cursor-pointer"
+                    className="group/owner inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--muted)]/60 px-3 py-1 text-xs text-[var(--foreground)] hover:border-indigo-500/50 hover:bg-[var(--muted)] transition cursor-pointer shadow-sm"
                     title="Click to edit or reassign owner"
                   >
-                    <span className="text-[11px] text-[var(--muted-foreground)]">Owner:</span>
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-500/20 text-[9px] font-bold text-indigo-300">
+                      {(item.owner || "U")[0].toUpperCase()}
+                    </span>
                     <span className="font-medium text-xs">
                       {item.owner || "Unassigned"}
                     </span>
                     <svg
-                      className="h-3 w-3 text-[var(--muted-foreground)] group-hover/owner:text-indigo-500 transition"
+                      className="h-3 w-3 text-[var(--muted-foreground)] group-hover/owner:text-indigo-400 transition"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -254,8 +256,8 @@ export default function EditorialActionItems({
                       onChange={(e) => {
                         if (e.target.value) handleSaveOwner(item.id, e.target.value);
                       }}
-                      className="h-7 rounded-lg border border-[var(--border)] bg-[var(--muted)] text-[11px] text-[var(--muted-foreground)] px-1 cursor-pointer focus:outline-none"
-                      title="Quick reassign to participant"
+                      className="h-7 rounded-lg border border-[var(--border)] bg-[var(--muted)]/60 text-[11px] text-[var(--muted-foreground)] px-2 cursor-pointer focus:outline-none hover:text-[var(--foreground)] transition"
+                      title="Quick reassign to meeting participant"
                     >
                       <option value="">Reassign...</option>
                       {participants.map((p) => (
