@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   {
-    href: "/",
+    href: "/dashboard",
     label: "Dashboard",
     icon: (
       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,27 +36,22 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
 
-  // If on a public share page, hide internal workspace sidebar
-  if (pathname.startsWith("/share/")) {
-    return null;
-  }
-
   return (
-    <aside className="w-60 shrink-0 border-r border-[var(--border)] bg-[var(--card)] p-4 hidden md:flex flex-col justify-between shadow-lg">
+    <aside className="w-60 shrink-0 border-r border-[var(--border)] bg-white p-4 hidden md:flex flex-col justify-between shadow-sm">
       <div className="space-y-6">
         {/* Brand with Beta Badge */}
         <Link href="/" className="flex items-center gap-2.5 px-2 text-[var(--foreground)] group">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 font-bold text-white shadow-md shadow-indigo-600/30 group-hover:bg-indigo-500 transition">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-teal-700 font-bold text-white shadow-sm group-hover:bg-teal-800 transition">
             F
           </div>
           <div className="flex items-center gap-2">
             <div>
-              <span className="text-base font-bold tracking-tight">Fathom</span>
-              <span className="block text-[9px] uppercase tracking-widest text-indigo-400 font-semibold">
+              <span className="text-base font-bold tracking-tight text-slate-900">Fathom</span>
+              <span className="block text-[9px] uppercase tracking-widest text-teal-700 font-semibold">
                 AI Notetaker
               </span>
             </div>
-            <span className="rounded-full px-2 py-0.5 text-[9px] font-mono font-semibold uppercase tracking-wider border border-amber-500/30 bg-amber-500/10 text-amber-400">
+            <span className="rounded-full px-2 py-0.5 text-[9px] font-mono font-semibold uppercase tracking-wider border border-amber-300 bg-amber-50 text-amber-800">
               v2 · beta
             </span>
           </div>
@@ -64,14 +59,14 @@ export default function Sidebar() {
 
         {/* Navigation items */}
         <div className="space-y-1">
-          <span className="px-2.5 text-[10px] font-mono font-medium uppercase tracking-wider text-[var(--muted-foreground)]">
+          <span className="px-2.5 text-[10px] font-mono font-medium uppercase tracking-wider text-slate-400">
             Workspace
           </span>
           <nav className="flex flex-col gap-1 pt-1">
             {navItems.map((item) => {
               const isActive =
-                item.href === "/"
-                  ? pathname === "/"
+                item.href === "/dashboard"
+                  ? pathname === "/dashboard"
                   : pathname.startsWith(item.href);
 
               return (
@@ -80,18 +75,18 @@ export default function Sidebar() {
                   href={item.href}
                   className={`flex items-center justify-between rounded-xl px-3 py-2 text-xs font-medium transition duration-150 ${
                     isActive
-                      ? "bg-indigo-600/15 text-indigo-300 font-semibold ring-1 ring-indigo-500/30 shadow-sm"
-                      : "text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                      ? "bg-teal-50 text-teal-800 font-semibold ring-1 ring-teal-200/80 shadow-sm"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className={isActive ? "text-indigo-400" : "text-[var(--muted-foreground)]"}>
+                    <span className={isActive ? "text-teal-700" : "text-slate-400"}>
                       {item.icon}
                     </span>
                     {item.label}
                   </div>
                   {isActive && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-indigo-400 shadow-sm shadow-indigo-400" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-teal-600 shadow-sm" />
                   )}
                 </Link>
               );
@@ -102,29 +97,29 @@ export default function Sidebar() {
 
       {/* Footer: Workspace & Capture Status */}
       <div className="space-y-3">
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--muted)]/40 p-3 space-y-1 text-xs">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-1 text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-[var(--foreground)]">Capture Pipeline</span>
-            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded">
+            <span className="text-[11px] font-medium text-slate-800">Capture Pipeline</span>
+            <span className="text-[10px] font-mono text-teal-700 bg-teal-50 border border-teal-200 px-1.5 py-0.5 rounded font-medium">
               Ready
             </span>
           </div>
-          <p className="text-[10px] text-[var(--muted-foreground)] leading-tight">
+          <p className="text-[10px] text-slate-500 leading-tight">
             Manual audio/video upload via Gemini 3.8.
           </p>
         </div>
 
         {/* User profile & Sign in */}
-        <div className="flex items-center justify-between px-2 pt-2 border-t border-[var(--border)]">
+        <div className="flex items-center justify-between px-2 pt-2 border-t border-slate-200">
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-full bg-indigo-600/30 text-indigo-400 ring-1 ring-indigo-500/40 flex items-center justify-center text-[10px] font-semibold">
+            <div className="h-6 w-6 rounded-full bg-teal-100 text-teal-800 ring-1 ring-teal-300 flex items-center justify-center text-[10px] font-bold">
               SK
             </div>
             <div className="text-left">
-              <span className="block text-[11px] font-medium text-[var(--foreground)] leading-none">
+              <span className="block text-[11px] font-semibold text-slate-900 leading-none">
                 Acme Workspace
               </span>
-              <span className="text-[9px] font-mono text-[var(--muted-foreground)]">
+              <span className="text-[9px] font-mono text-slate-500">
                 Local Session
               </span>
             </div>
@@ -135,7 +130,7 @@ export default function Sidebar() {
               e.preventDefault();
               alert("Sign in placeholder — authentication is not enabled for this evaluation build.");
             }}
-            className="text-[10px] font-mono text-indigo-400 hover:text-indigo-300 hover:underline"
+            className="text-[10px] font-mono text-teal-700 hover:text-teal-800 hover:underline font-medium"
           >
             Sign in
           </a>

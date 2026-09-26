@@ -151,22 +151,22 @@ export default function UploadMeetingModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-150">
-      <div className="w-full max-w-lg rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-7 shadow-2xl space-y-6">
+      <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 sm:p-7 shadow-2xl space-y-6">
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-[var(--border)] pb-4">
+        <div className="flex items-start justify-between border-b border-slate-100 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="rounded-full bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 text-[10px] font-mono font-medium text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">
+              <span className="rounded-full bg-teal-50 border border-teal-200 px-2 py-0.5 text-[10px] font-mono font-medium text-teal-800 uppercase tracking-wide">
                 Ingest Recording
               </span>
-              <span className="text-xs font-mono text-[var(--muted-foreground)]">
+              <span className="text-xs font-mono text-slate-500">
                 • Max 25MB
               </span>
             </div>
-            <h2 className="text-xl font-bold tracking-tight text-[var(--foreground)]">
+            <h2 className="text-xl font-bold tracking-tight text-slate-900">
               Add Meeting Recording
             </h2>
-            <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               Upload an audio or video file. Gemini will transcribe speech, extract key decisions, and synthesize action items.
             </p>
           </div>
@@ -174,7 +174,7 @@ export default function UploadMeetingModal({
           {state !== "uploading" && state !== "processing" && (
             <button
               onClick={handleClose}
-              className="rounded-lg p-1.5 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition"
+              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
               title="Close modal"
             >
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,10 +192,10 @@ export default function UploadMeetingModal({
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition ${
+              className={`cursor-pointer rounded-2xl border-2 border-dashed p-6 text-center transition ${
                 selectedFile
-                  ? "border-indigo-500 bg-indigo-500/5"
-                  : "border-[var(--border)] hover:border-indigo-400 bg-[var(--background)]/50"
+                  ? "border-teal-600 bg-teal-50/40"
+                  : "border-slate-300 hover:border-teal-500 bg-slate-50/50"
               }`}
             >
               <input
@@ -206,7 +206,7 @@ export default function UploadMeetingModal({
                 className="hidden"
               />
 
-              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-500 mb-3">
+              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700 mb-3">
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -219,19 +219,19 @@ export default function UploadMeetingModal({
 
               {selectedFile ? (
                 <div className="space-y-1">
-                  <p className="text-sm font-semibold text-[var(--foreground)] truncate max-w-xs mx-auto">
+                  <p className="text-sm font-semibold text-slate-900 truncate max-w-xs mx-auto">
                     {selectedFile.name}
                   </p>
-                  <p className="text-xs font-mono text-indigo-600 dark:text-indigo-400">
+                  <p className="text-xs font-mono text-teal-700 font-medium">
                     {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • Ready for ingest
                   </p>
                 </div>
               ) : (
                 <div className="space-y-1">
-                  <p className="text-xs font-medium text-[var(--foreground)]">
+                  <p className="text-xs font-medium text-slate-800">
                     Click to browse or drag recording here
                   </p>
-                  <p className="text-[11px] text-[var(--muted-foreground)]">
+                  <p className="text-[11px] text-slate-500">
                     MP3, M4A, WAV, MP4, WebM (up to 25MB)
                   </p>
                 </div>
@@ -240,7 +240,7 @@ export default function UploadMeetingModal({
 
             {/* Optional Title input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-[var(--foreground)]">
+              <label className="text-xs font-medium text-slate-700">
                 Meeting Title (Optional)
               </label>
               <input
@@ -248,12 +248,12 @@ export default function UploadMeetingModal({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Architecture Review & Sprint Planning"
-                className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-3.5 py-2 text-xs text-[var(--foreground)] placeholder-[var(--muted-foreground)] focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-teal-600 focus:outline-none focus:ring-1 focus:ring-teal-600 transition"
               />
             </div>
 
             {errorMessage && (
-              <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-600 dark:text-red-400">
+              <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700">
                 {errorMessage}
               </div>
             )}
@@ -263,14 +263,14 @@ export default function UploadMeetingModal({
               <button
                 type="button"
                 onClick={handleClose}
-                className="rounded-xl px-4 py-2 text-xs font-medium text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] transition"
+                className="rounded-xl px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={!selectedFile}
-                className="rounded-xl bg-indigo-600 px-5 py-2 text-xs font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-md shadow-indigo-600/20"
+                className="rounded-xl bg-teal-700 px-5 py-2 text-xs font-semibold text-white hover:bg-teal-800 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
               >
                 Transcribe & Process Recording →
               </button>
@@ -280,15 +280,15 @@ export default function UploadMeetingModal({
 
         {/* State 2: UPLOADING */}
         {state === "uploading" && (
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--background)]/50 p-8 text-center space-y-4">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-500">
-              <span className="h-6 w-6 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
+          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 text-teal-700">
+              <span className="h-6 w-6 rounded-full border-2 border-teal-600 border-t-transparent animate-spin" />
             </div>
             <div className="space-y-1.5">
-              <h3 className="text-sm font-semibold text-[var(--foreground)]">
+              <h3 className="text-sm font-semibold text-slate-900">
                 Uploading recording to secure storage...
               </h3>
-              <p className="text-xs text-[var(--muted-foreground)]">
+              <p className="text-xs text-slate-500">
                 Transferring {selectedFile?.name} to private Supabase Storage bucket.
               </p>
             </div>
@@ -297,21 +297,21 @@ export default function UploadMeetingModal({
 
         {/* State 3: PROCESSING */}
         {state === "processing" && (
-          <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-8 text-center space-y-4">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/15 text-indigo-500 animate-pulse">
+          <div className="rounded-2xl border border-teal-200 bg-teal-50/50 p-8 text-center space-y-4">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-100 text-teal-700 animate-pulse">
               <svg className="h-6 w-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </div>
             <div className="space-y-1.5">
-              <h3 className="text-sm font-semibold text-[var(--foreground)]">
+              <h3 className="text-sm font-semibold text-slate-900">
                 Transcribing your recording and extracting intelligence with Gemini...
               </h3>
-              <p className="text-xs text-[var(--muted-foreground)] max-w-sm mx-auto leading-relaxed">
+              <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
                 Analyzing audio tracks, labeling speakers, and distilling executive summary, decisions, and action items. This typically takes 10–30 seconds.
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-[var(--muted)] px-3 py-1 text-[11px] font-mono text-[var(--muted-foreground)]">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white border border-slate-200 px-3 py-1 text-[11px] font-mono text-slate-600">
               <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
               Gemini pipeline active
             </div>
@@ -320,17 +320,17 @@ export default function UploadMeetingModal({
 
         {/* State 4: DONE */}
         {state === "done" && (
-          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-8 text-center space-y-3">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center space-y-3">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <div className="space-y-1">
-              <h3 className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+              <h3 className="text-sm font-semibold text-emerald-800">
                 Meeting Transcribed & Synthesized Successfully!
               </h3>
-              <p className="text-xs text-[var(--muted-foreground)]">
+              <p className="text-xs text-slate-600">
                 Redirecting you to the meeting detail view...
               </p>
             </div>
@@ -340,14 +340,14 @@ export default function UploadMeetingModal({
         {/* State 5: ERROR */}
         {state === "error" && (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-5 space-y-2">
-              <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-5 space-y-2">
+              <div className="flex items-center gap-2 text-red-700">
                 <svg className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <h4 className="text-xs font-semibold">Processing Failed</h4>
               </div>
-              <p className="text-xs text-red-600 dark:text-red-400 leading-relaxed">
+              <p className="text-xs text-red-700 leading-relaxed">
                 {errorMessage || "Failed to process the recording."}
               </p>
             </div>
@@ -356,14 +356,14 @@ export default function UploadMeetingModal({
               <button
                 type="button"
                 onClick={resetForm}
-                className="rounded-xl bg-[var(--muted)] px-4 py-2 text-xs font-medium text-[var(--foreground)] hover:bg-[var(--accent)] transition"
+                className="rounded-xl bg-slate-100 px-4 py-2 text-xs font-medium text-slate-800 hover:bg-slate-200 transition"
               >
                 Choose Another File
               </button>
               <button
                 type="button"
                 onClick={handleClose}
-                className="rounded-xl px-4 py-2 text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition"
+                className="rounded-xl px-4 py-2 text-xs font-medium text-slate-500 hover:text-slate-800 transition"
               >
                 Close
               </button>

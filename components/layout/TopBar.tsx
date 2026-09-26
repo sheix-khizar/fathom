@@ -22,16 +22,16 @@ export default function TopBar() {
 
   if (isPublicShare) {
     return (
-      <header className="flex h-14 items-center justify-between border-b border-[var(--border)] bg-[var(--card)]/90 px-4 sm:px-6 backdrop-blur z-20">
+      <header className="flex h-14 items-center justify-between border-b border-slate-200 bg-white/90 px-4 sm:px-6 backdrop-blur z-20">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-indigo-600 font-bold text-white shadow-md shadow-indigo-600/30">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-teal-700 font-bold text-white shadow-sm">
             F
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold tracking-tight text-[var(--foreground)]">
-              Fathom <span className="text-xs font-normal text-[var(--muted-foreground)]">Public Excerpt</span>
+            <span className="text-sm font-bold tracking-tight text-slate-900">
+              Fathom <span className="text-xs font-normal text-slate-500">Public Excerpt</span>
             </span>
-            <span className="rounded-full px-1.5 py-0.2 text-[9px] font-mono border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+            <span className="rounded-full px-2 py-0.5 text-[9px] font-mono border border-teal-200 bg-teal-50 text-teal-700 font-semibold">
               Zero-Leak
             </span>
           </div>
@@ -44,13 +44,13 @@ export default function TopBar() {
               e.preventDefault();
               alert("Sign in placeholder — evaluation mode.");
             }}
-            className="text-xs text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition hidden sm:inline"
+            className="text-xs text-slate-500 hover:text-slate-900 transition hidden sm:inline"
           >
             Sign in
           </a>
           <Link
-            href="/"
-            className="rounded-xl bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-sm shadow-indigo-600/20"
+            href="/dashboard"
+            className="rounded-xl bg-teal-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-teal-800 transition shadow-sm"
           >
             Launch Fathom Workspace →
           </Link>
@@ -60,21 +60,21 @@ export default function TopBar() {
   }
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-[var(--border)] bg-[var(--card)]/80 px-4 sm:px-6 backdrop-blur z-20">
+    <header className="flex h-14 items-center justify-between border-b border-slate-200 bg-white/90 px-4 sm:px-6 backdrop-blur z-20">
       {/* Mobile brand & search input */}
       <div className="flex items-center gap-3 flex-1 max-w-lg">
         <Link href="/" className="md:hidden flex items-center gap-1.5 shrink-0">
-          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-indigo-600 font-bold text-white shadow-md shadow-indigo-600/30">
+          <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-teal-700 font-bold text-white shadow-sm">
             F
           </div>
-          <span className="rounded px-1.5 py-0.5 text-[9px] font-mono font-medium border border-amber-500/30 bg-amber-500/10 text-amber-400">
+          <span className="rounded px-1.5 py-0.5 text-[9px] font-mono font-medium border border-amber-300 bg-amber-50 text-amber-800">
             beta
           </span>
         </Link>
 
         <form onSubmit={handleSearch} className="relative flex-1">
           <svg
-            className="absolute left-3 top-2.5 h-3.5 w-3.5 text-[var(--muted-foreground)] pointer-events-none"
+            className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400 pointer-events-none"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -91,7 +91,7 @@ export default function TopBar() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search meetings & transcripts..."
-            className="w-full rounded-xl border border-[var(--border)] bg-[var(--muted)]/60 pl-8 pr-3 py-1.5 text-xs text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition shadow-inner"
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-teal-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-teal-600/10 transition"
           />
         </form>
       </div>
@@ -99,16 +99,16 @@ export default function TopBar() {
       <div className="flex items-center gap-3 ml-3">
         {/* Mobile quick nav links */}
         <div className="flex md:hidden items-center gap-1.5 text-xs">
-          <Link href="/meetings" className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] px-2 py-1 rounded-lg">
+          <Link href="/meetings" className="text-slate-600 hover:text-slate-900 px-2 py-1 rounded-lg">
             Calls
           </Link>
-          <Link href="/search" className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] px-2 py-1 rounded-lg">
+          <Link href="/search" className="text-slate-600 hover:text-slate-900 px-2 py-1 rounded-lg">
             Search
           </Link>
         </div>
 
-        <span className="text-xs text-[var(--muted-foreground)] hidden lg:inline font-mono">
-          Workspace: <strong className="text-[var(--foreground)] font-medium">Acme Product Sync</strong>
+        <span className="text-xs text-slate-500 hidden lg:inline font-mono">
+          Workspace: <strong className="text-slate-800 font-semibold">Acme Product Sync</strong>
         </span>
 
         {/* Decorative Sign in link */}
@@ -118,13 +118,13 @@ export default function TopBar() {
             e.preventDefault();
             alert("Sign in placeholder — authentication is not enabled for this evaluation build.");
           }}
-          className="text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] px-2.5 py-1 rounded-lg border border-[var(--border)] hover:bg-[var(--muted)] transition"
+          className="text-xs font-medium text-slate-600 hover:text-slate-900 px-2.5 py-1 rounded-lg border border-slate-200 hover:bg-slate-100 transition cursor-pointer"
         >
           Sign in
         </a>
 
         <div
-          className="h-7 w-7 rounded-full bg-indigo-600/30 text-indigo-400 ring-1 ring-indigo-500/40 flex items-center justify-center text-xs font-semibold shrink-0 cursor-default"
+          className="h-7 w-7 rounded-full bg-teal-100 text-teal-800 ring-1 ring-teal-300 flex items-center justify-center text-xs font-bold shrink-0 cursor-default"
           title="Sheikh Muhammad Khizar (shkkhizar27)"
         >
           SK

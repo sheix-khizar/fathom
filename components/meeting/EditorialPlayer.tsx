@@ -45,14 +45,14 @@ export default function EditorialPlayer({
 
   if (isUpcoming) {
     return (
-      <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 text-center space-y-2 shadow-md">
-        <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/10 text-sky-400">
+      <div className="rounded-3xl border border-slate-200 bg-white p-6 text-center space-y-2 card-elevation">
+        <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
-        <h4 className="text-sm font-semibold text-[var(--foreground)]">Meeting Scheduled</h4>
-        <p className="text-xs text-[var(--muted-foreground)] max-w-md mx-auto">
+        <h4 className="text-sm font-semibold text-slate-900">Meeting Scheduled</h4>
+        <p className="text-xs text-slate-600 max-w-md mx-auto">
           The interactive timeline and transcript playback will become active once this call concludes and recording is ingested.
         </p>
       </div>
@@ -60,17 +60,17 @@ export default function EditorialPlayer({
   }
 
   return (
-    <div className="rounded-3xl border border-[var(--border)] bg-[var(--card)] p-5 sm:p-6 shadow-xl space-y-4">
+    <div className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 card-elevation space-y-4">
       {/* Simulation Header Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
         <div className="flex items-center gap-2">
-          <span className="flex h-2 w-2 rounded-full bg-indigo-400 animate-pulse" />
-          <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--foreground)]">
+          <span className="flex h-2 w-2 rounded-full bg-teal-600 animate-pulse" />
+          <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
             Timeline Scrubber & Playback
           </span>
         </div>
-        <span className="rounded-full bg-amber-500/10 border border-amber-500/25 px-2.5 py-0.5 text-[10px] font-mono text-amber-400 font-medium">
-          Capture: Manual upload (audio playback simulated)
+        <span className="rounded-full bg-amber-50 border border-amber-200 px-2.5 py-0.5 text-[10px] font-mono text-amber-800 font-medium">
+          Capture: Manual upload (playback simulated)
         </span>
       </div>
 
@@ -84,12 +84,12 @@ export default function EditorialPlayer({
             step={1}
             value={currentTime}
             onChange={(e) => onTimeChange(parseFloat(e.target.value))}
-            className="w-full h-2 bg-[var(--muted)] rounded-lg appearance-none cursor-pointer accent-indigo-500 focus:outline-none"
+            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-700 focus:outline-none"
           />
         </div>
-        <div className="flex items-center justify-between text-xs font-mono text-[var(--muted-foreground)]">
-          <span className="text-[var(--foreground)] font-semibold">{formatPlayerTime(currentTime)}</span>
-          <span className="text-[11px] text-[var(--muted-foreground)]/70">
+        <div className="flex items-center justify-between text-xs font-mono text-slate-500">
+          <span className="text-slate-900 font-bold">{formatPlayerTime(currentTime)}</span>
+          <span className="text-[11px] text-slate-400">
             {progressPercent.toFixed(0)}% elapsed
           </span>
           <span>{formatPlayerTime(durationSec)}</span>
@@ -102,7 +102,7 @@ export default function EditorialPlayer({
           <button
             type="button"
             onClick={() => onTimeChange(Math.max(0, currentTime - 15))}
-            className="inline-flex h-9 px-2.5 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--muted)]/50 hover:bg-[var(--muted)] text-[var(--foreground)] font-mono text-xs transition cursor-pointer"
+            className="inline-flex h-9 px-2.5 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-800 font-mono text-xs transition cursor-pointer"
             title="Rewind 15 seconds"
           >
             -15s
@@ -111,7 +111,7 @@ export default function EditorialPlayer({
           <button
             type="button"
             onClick={() => setIsPlaying(!isPlaying)}
-            className="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-indigo-600 text-white font-medium text-xs hover:bg-indigo-500 transition shadow-md shadow-indigo-600/30 cursor-pointer"
+            className="inline-flex items-center gap-2 h-9 px-4 rounded-xl bg-teal-700 text-white font-semibold text-xs hover:bg-teal-800 transition shadow-sm cursor-pointer"
           >
             {isPlaying ? (
               <>
@@ -133,7 +133,7 @@ export default function EditorialPlayer({
           <button
             type="button"
             onClick={() => onTimeChange(Math.min(durationSec, currentTime + 15))}
-            className="inline-flex h-9 px-2.5 items-center justify-center rounded-xl border border-[var(--border)] bg-[var(--muted)]/50 hover:bg-[var(--muted)] text-[var(--foreground)] font-mono text-xs transition cursor-pointer"
+            className="inline-flex h-9 px-2.5 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-800 font-mono text-xs transition cursor-pointer"
             title="Fast-forward 15 seconds"
           >
             +15s
@@ -142,7 +142,7 @@ export default function EditorialPlayer({
 
         {/* Speed toggle */}
         <div className="flex items-center gap-1.5 text-xs font-mono">
-          <span className="text-[var(--muted-foreground)] mr-1">Speed:</span>
+          <span className="text-slate-500 mr-1">Speed:</span>
           {[1, 1.5, 2].map((s) => (
             <button
               key={s}
@@ -150,8 +150,8 @@ export default function EditorialPlayer({
               onClick={() => setSpeed(s)}
               className={`px-2.5 py-1 rounded-lg text-xs font-mono transition cursor-pointer ${
                 speed === s
-                  ? "bg-indigo-600 text-white font-semibold shadow-sm"
-                  : "bg-[var(--muted)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] border border-[var(--border)]"
+                  ? "bg-teal-700 text-white font-semibold shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200"
               }`}
             >
               {s}x
