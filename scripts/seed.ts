@@ -6,6 +6,7 @@ try {
 
 import { createClient } from '@supabase/supabase-js';
 import { generateMeetingIntelligence } from '../lib/ai/summarize';
+import { insertFullMeeting } from '../lib/meetings/mutations';
 import type { Database } from '../lib/supabase/types';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -158,79 +159,25 @@ async function seedDatabase() {
     console.log(`     Decisions count: ${intelligence.decisions.length}`);
     console.log(`     Action Items count: ${intelligence.actionItems.length}`);
 
-    // Insert meeting row into Supabase
-    const { data: meetingRow, error: meetingError } = await adminClient
-      .from('meetings')
-      .insert({
+    // Insert meeting, transcript lines, and action items via shared insertFullMeeting
+    const { meeting: meetingRow, linesCount, actionsCount, firstLineId, midLineId } = await insertFullMeeting(
+      adminClient,
+      {
         title: meetingDef.title,
         date: meetingDef.date,
         duration: meetingDef.duration,
         status: meetingDef.status,
         participants: meetingDef.participants,
         summary: intelligence.summary,
-        decisions: intelligence.decisions
-      })
-      .select()
-      .single();
+        decisions: intelligence.decisions,
+        transcript: meetingDef.transcript,
+        actionItems: intelligence.actionItems.map(item => ({ text: item.text, owner: item.owner })),
+      }
+    );
 
-    if (meetingError || !meetingRow) {
-      console.error(`Failed to insert meeting "${meetingDef.title}":`, meetingError?.message);
-      process.exit(1);
-    }
     console.log(`  -> Meeting row created with ID: ${meetingRow.id}`);
-
-    // Insert transcript lines if any
-    let firstLineId: string | null = null;
-    let midLineId: string | null = null;
-
-    if (meetingDef.transcript.length > 0) {
-      const lineInserts = meetingDef.transcript.map((line, idx) => ({
-        meeting_id: meetingRow.id,
-        speaker: line.speaker,
-        text: line.text,
-        timestamp: line.timestamp,
-        offset_seconds: line.offset_seconds,
-        line_order: idx + 1
-      }));
-
-      const { data: insertedLines, error: linesError } = await adminClient
-        .from('transcript_lines')
-        .insert(lineInserts)
-        .select();
-
-      if (linesError || !insertedLines) {
-        console.error(`Failed to insert transcript lines:`, linesError?.message);
-        process.exit(1);
-      }
-      console.log(`  -> Inserted ${insertedLines.length} transcript lines.`);
-      if (insertedLines.length > 0) {
-        firstLineId = insertedLines[0].id;
-        midLineId = insertedLines[Math.min(3, insertedLines.length - 1)].id;
-      }
-    } else {
-      console.log(`  -> No transcript lines (honest empty state for upcoming meeting).`);
-    }
-
-    // Insert Gemini-extracted action items
-    if (intelligence.actionItems.length > 0) {
-      const actionInserts = intelligence.actionItems.map(item => ({
-        meeting_id: meetingRow.id,
-        text: item.text,
-        owner: item.owner,
-        completed: false
-      }));
-
-      const { data: insertedActions, error: actionError } = await adminClient
-        .from('action_items')
-        .insert(actionInserts)
-        .select();
-
-      if (actionError || !insertedActions) {
-        console.error(`Failed to insert action items:`, actionError?.message);
-        process.exit(1);
-      }
-      console.log(`  -> Inserted ${insertedActions.length} Gemini-generated action items.`);
-    }
+    console.log(`  -> Inserted ${linesCount} transcript lines.`);
+    console.log(`  -> Inserted ${actionsCount} Gemini-generated action items.`);
 
     // Create a sample share clip for the Launch Planning meeting (meeting #4)
     if (meetingDef.title.includes('Launch Planning') && firstLineId && midLineId) {

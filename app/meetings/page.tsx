@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabaseAdmin } from "@/lib/supabase/server";
 import type { EnrichedMeeting } from "@/lib/types/meetings";
+import AddMeetingButton from "@/components/meeting/AddMeetingButton";
 
 export const dynamic = "force-dynamic";
 
@@ -62,10 +63,11 @@ export default async function MeetingsListPage() {
             Access synced transcripts, Gemini executive summaries, decisions, and action items.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <span className="rounded-xl border border-[var(--border)] bg-[var(--muted)] px-3 py-1.5 text-xs font-mono text-[var(--foreground)]">
             {enrichedMeetings.length} Total Sessions
           </span>
+          <AddMeetingButton />
         </div>
       </div>
 

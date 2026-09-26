@@ -149,3 +149,89 @@ function getEmptyIntelligence(): MeetingIntelligence {
     actionItems: [],
   };
 }
+
+export type ProcessedMeeting = {
+  transcript: { speaker: string; startSec: number; text: string }[];
+  summary: string;
+  decisions: string[];
+  actionItems: { title: string; owner: string }[];
+};
+
+/**
+ * Transcribes audio/video recording and extracts structured meeting intelligence via Gemini.
+ * Specified in Docs/FEATURE_UPLOAD.md
+ */
+export async function processRecording(
+  fileBase64: string,
+  mimeType: string
+): Promise<ProcessedMeeting | null> {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error('GEMINI_API_KEY is not set.');
+    return null;
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
+
+  const prompt = `Transcribe this meeting recording with speaker labels and
+approximate start times in seconds. Then extract a summary, decisions, and
+action items. Return ONLY valid JSON, no markdown fences, matching:
+{
+  "transcript": [{"speaker": "...", "startSec": 0, "text": "..."}],
+  "summary": "2-4 sentences",
+  "decisions": ["..."],
+  "actionItems": [{"title": "...", "owner": "best-guess name"}]
+}`;
+
+  const audioModels = ['gemini-3.5-flash', 'gemini-3.8-flash', 'gemini-flash-latest'];
+
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    for (const model of audioModels) {
+      try {
+        console.log(`[Attempt ${attempt}] Sending recording to Gemini model: ${model}...`);
+        const result = await ai.models.generateContent({
+          model,
+          contents: [
+            {
+              inlineData: {
+                data: fileBase64,
+                mimeType,
+              },
+            },
+            {
+              text: prompt,
+            },
+          ],
+          config: {
+            responseMimeType: 'application/json',
+            temperature: 0.2,
+          },
+        });
+
+        const raw = result.text?.trim().replace(/^```json\s*|```$/g, '') || '';
+        if (!raw) {
+          continue;
+        }
+
+        const parsed = JSON.parse(raw) as ProcessedMeeting;
+        return {
+          transcript: Array.isArray(parsed.transcript) ? parsed.transcript : [],
+          summary: typeof parsed.summary === 'string' ? parsed.summary : '',
+          decisions: Array.isArray(parsed.decisions) ? parsed.decisions : [],
+          actionItems: Array.isArray(parsed.actionItems) ? parsed.actionItems : [],
+        };
+      } catch (err: any) {
+        console.warn(`[Attempt ${attempt}] Gemini audio model ${model} attempt failed:`, err.message);
+        await new Promise((r) => setTimeout(r, 1200));
+      }
+    }
+
+    if (attempt < 4) {
+      const waitTime = attempt * 3000;
+      console.log(`Waiting ${waitTime}ms before audio retry round ${attempt + 1}...`);
+      await new Promise((r) => setTimeout(r, waitTime));
+    }
+  }
+
+  return null;
+}
