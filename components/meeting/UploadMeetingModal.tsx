@@ -104,6 +104,11 @@ export default function UploadMeetingModal({
       clearTimeout(uploadTimeout);
 
       if (!res.ok) {
+        if (res.status === 504) {
+          throw new Error(
+            "The upload gateway timed out while processing audio. Please try with a shorter recording clip (under 2 minutes) or try again."
+          );
+        }
         const errJson = await res.json().catch(() => ({}));
         throw new Error(errJson.error || `Upload failed with HTTP ${res.status}`);
       }
