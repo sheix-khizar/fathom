@@ -153,7 +153,7 @@ export default function MeetingDetailV2({
       />
 
       {/* Editorial Navigation Tabs */}
-      <div className="flex border-b border-[var(--border)] text-sm font-medium gap-6">
+      <div className="flex overflow-x-auto scrollbar-none border-b border-[var(--border)] text-xs sm:text-sm font-medium gap-4 sm:gap-6 whitespace-nowrap">
         <button
           type="button"
           onClick={() => setActiveTab("overview")}

@@ -97,7 +97,7 @@ export default function EditorialPlayer({
       </div>
 
       {/* Playback Controls */}
-      <div className="flex items-center justify-between pt-1">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
         <div className="flex items-center gap-2">
           <button
             type="button"

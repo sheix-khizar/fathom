@@ -63,7 +63,7 @@ export default async function MeetingsListPage() {
             Access synced transcripts, Gemini executive summaries, decisions, and action items.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <span className="rounded-xl border border-[var(--border)] bg-[var(--muted)] px-3 py-1.5 text-xs font-mono text-[var(--foreground)]">
             {enrichedMeetings.length} Total Sessions
           </span>

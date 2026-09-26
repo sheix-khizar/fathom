@@ -227,7 +227,7 @@ export default function EditorialShareModal({
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex flex-wrap items-center justify-between gap-2.5 pt-2">
               <button
                 type="button"
                 onClick={() => {
@@ -237,7 +237,7 @@ export default function EditorialShareModal({
               >
                 ← Create another clip
               </button>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Link
                   href={createdShareUrl.replace(window.location.origin, "")}
                   target="_blank"

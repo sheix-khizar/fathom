@@ -247,7 +247,7 @@ export default function EditorialSearch() {
         {/* Filter Tabs when query exists */}
         {debouncedQuery.trim() && !isLoading && totalCount > 0 && (
           <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => setActiveTab("all")}

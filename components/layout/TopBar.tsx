@@ -82,8 +82,8 @@ export default function TopBar() {
           <Link href="/meetings" className="text-gray-400 hover:text-white px-1.5 py-1">
             Calls
           </Link>
-          <Link href="/calendar" className="text-gray-400 hover:text-white px-1.5 py-1">
-            Cal
+          <Link href="/search" className="text-gray-400 hover:text-white px-1.5 py-1">
+            Search
           </Link>
         </div>
 
